@@ -2,8 +2,8 @@
   <div class="app-container">
     <div id="app">
       <PageHeader title="To Do App" />
-      <CreateItem :nextId="nextId" @add:item="onAddItem" />
-      <ListItem :items="items" @delete:item="onDeleteItem" @change:complete="onChangeComplete" v-if="items.length > 0" />
+      <CreateItem />
+      <ListItem v-if="items.length > 0" />
       <div v-else class="empty-list">
         List is empty!...
       </div>
@@ -18,29 +18,16 @@ import { ToDoItem } from './services';
 import PageHeader from './components/PageHeader.vue';
 import CreateItem from './components/CreateItem.vue';
 import ListItem from './components/ListItem.vue';
+import { GetterTypes } from './store';
+import { Getter, Mutation, } from 'vuex-class';
 
 @Component({
   components: { PageHeader, CreateItem, ListItem }
 })
 export default class App extends Vue {
 
-  nextId = 1;
-  titleText = "";
-  items: ToDoItem[] = [];
+  @Getter(GetterTypes.GET_ITEMS) items!: ToDoItem[];
 
-  onAddItem(item: ToDoItem) {
-    this.nextId++;
-    this.items.push(item);
-  }
-
-  onDeleteItem(item: ToDoItem) {
-    this.items.splice(this.items.indexOf(item), 1);
-  }
-
-  onChangeComplete(id: number, isCompleted: boolean){
-    const item = this.items.find(x=>x.id === id);
-    item!.isCompleted = isCompleted;
-  }
 }
 </script>
 

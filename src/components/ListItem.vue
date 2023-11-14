@@ -2,38 +2,32 @@
   <div class="list">
     <div class="list-header">Total item count: {{ itemCount }}, completed: {{ completedItemCount }}</div>
     <div v-for="item in items" :key="item.id" :class="['list-row', item.isCompleted ? 'completed' : '']">
-      <div class="item-checkbox"><input type="checkbox" :value="item.isCompleted" @input="onChangeComplete(item.id, !item.isCompleted)" /></div>
+      <div class="item-checkbox"><input type="checkbox" :value="item.isCompleted"
+          @input="changeComplete({ id: item.id, isCompleted: !item.isCompleted })" /></div>
       <div class="item-id" title="Id">{{ item.id }}</div>
       <div class="item-text" title="Text">{{ item.text }}</div>
       <div class="item-date" title="Created date">{{ item.createDateTime.toLocaleDateString() }}<br />{{
         item.createDateTime.toLocaleTimeString() }}</div>
-      <div class="item-delete-button"><button @click="onDeleteItem(item)">Delete</button></div>
+      <div class="item-delete-button"><button @click="deleteItem(item.id)">Delete</button></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import { Getter, Mutation, } from 'vuex-class';
 import { ToDoItem } from '@/services';
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
+import { GetterTypes, MutationTypes } from '@/store';
 
 @Component
-export default class HelloWorld extends Vue {
-  @Prop()
-  items!: ToDoItem[];
+export default class ListItem extends Vue {
 
-  get itemCount() {
-    return this.items.length;
-  }
+  @Getter(GetterTypes.GET_ITEMS) items!: ToDoItem[];
+  @Getter(GetterTypes.ITEM_COUNT) itemCount!: number;
+  @Getter(GetterTypes.COMPLETED_ITEM_COUNT) completedItemCount!: number;
+  @Mutation(MutationTypes.CHANGE_COMPLETE) changeComplete!: (payload: { id: number; isCompleted: boolean; }) => void;
+  @Mutation(MutationTypes.DELETE_ITEM) deleteItem!: (id: number) => void;
 
-  get completedItemCount() {
-    return this.items.reduce((accumulator, currentValue) => accumulator + (currentValue.isCompleted ? 1 : 0), 0);
-  }
-
-  @Emit('delete:item')
-  onDeleteItem(item: ToDoItem) { }
-
-  @Emit('change:complete')
-  onChangeComplete(id: number, isCompleted: boolean) { }
 }
 </script>
 

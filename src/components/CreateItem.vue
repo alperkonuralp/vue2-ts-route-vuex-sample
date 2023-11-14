@@ -9,34 +9,24 @@
 </template>
 
 <script lang="ts">
-import { ToDoItem } from '@/services';
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
+import { MutationTypes } from '@/store';
+import {
+  Mutation,
+} from 'vuex-class';
+
 
 @Component
 export default class CreateItem extends Vue {
-
-  @Prop()
-  items!: ToDoItem[];
-
-  @Prop()
-  nextId!: number;
+  @Mutation(MutationTypes.ADD_ITEM) addItem!: (text: string) => void;
 
   titleText = "";
 
-
   onAddClick() {
-    const item: ToDoItem = {
-      id: this.nextId,
-      text: this.titleText,
-      createDateTime: new Date(),
-      isCompleted: false
-    };
-    this.addItemEvent(item);
+    this.addItem(this.titleText);
     this.titleText = '';
   }
 
-  @Emit('add:item')
-  addItemEvent(item: ToDoItem) { }
 }
 </script>
 
