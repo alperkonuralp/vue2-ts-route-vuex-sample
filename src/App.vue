@@ -1,9 +1,7 @@
 <template>
   <div class="app-container">
     <div id="app">
-      <header>
-        <h1>To Do App</h1>
-      </header>
+      <PageHeader title="To Do App" />
       <div class="create-item">
         <div class="create-item-text">Title : </div>
         <div class="create-item-input"><input type="text" placeholder="Enter your task title." /></div>
@@ -37,6 +35,18 @@
   </div>
 </template>
 
+<script lang="ts" >
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import PageHeader from './components/PageHeader.vue';
+
+@Component({
+  components: { PageHeader }
+})
+export default class App extends Vue {
+
+}
+</script>
+
 <style lang="scss">
 body {
   background-color: rgb(241, 255, 232);
@@ -59,22 +69,6 @@ body {
     background-color: rgb(232, 247, 221);
     color: #2c3e50;
 
-    header {
-      h1 {
-        font-family: Rubik-Dirt, Helvetica, Arial, sans-serif;
-        color: blue;
-        font-size: 32pt;
-        background-color: #ddd;
-        padding: 15px;
-        border-radius: 15px;
-        text-align: center;
-      }
-
-      &:hover h1 {
-        font-family: Rubik-Iso, Helvetica, Arial, sans-serif;
-        // color: white;
-      }
-    }
 
     .create-item {
       display: flex;
