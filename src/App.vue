@@ -7,11 +7,11 @@
         <div class="create-item-input">
           <input type="text" placeholder="Enter your task title." v-model="titleText" />
         </div>
-        <div class="create-item-button"><button @click="onAddClick">Add</button></div>
+        <div class="create-item-button"><button @click="onAddClick" :disabled="titleText.trim() == ''">Add</button></div>
       </div>
-      <div class="list">
+      <div class="list" v-if="items.length > 0">
         <div class="list-header">Total item count: {{ itemCount }}, completed: {{ completedItemCount }}</div>
-        <div v-for="item in items" :key="item.id" :class="['list-row', item.isCompleted ? 'completed': '' ]">
+        <div v-for="item in items" :key="item.id" :class="['list-row', item.isCompleted ? 'completed' : '']">
           <div class="item-checkbox"><input type="checkbox" v-model="item.isCompleted" /></div>
           <div class="item-id" title="Id">{{ item.id }}</div>
           <div class="item-text" title="Text">{{ item.text }}</div>
@@ -19,6 +19,9 @@
             item.createDateTime.toLocaleTimeString() }}</div>
           <div class="item-delete-button"><button @click="onDeleteClick(item)">Delete</button></div>
         </div>
+      </div>
+      <div v-else class="empty-list">
+        List is empty!...
       </div>
     </div>
   </div>
@@ -43,7 +46,7 @@ export default class App extends Vue {
   }
 
   get completedItemCount() {
-    return this.items.reduce((accumulator, currentValue) => accumulator + (currentValue.isCompleted?1:0), 0);
+    return this.items.reduce((accumulator, currentValue) => accumulator + (currentValue.isCompleted ? 1 : 0), 0);
   }
 
   onAddClick() {
@@ -188,6 +191,10 @@ body {
           }
         }
       }
+    }
+
+    .empty-list {
+      text-align: center;
     }
   }
 }
