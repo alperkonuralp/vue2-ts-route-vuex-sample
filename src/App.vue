@@ -4,31 +4,20 @@
       <PageHeader title="To Do App" />
       <div class="create-item">
         <div class="create-item-text">Title : </div>
-        <div class="create-item-input"><input type="text" placeholder="Enter your task title." /></div>
-        <div class="create-item-button"><button>Add</button></div>
+        <div class="create-item-input">
+          <input type="text" placeholder="Enter your task title." v-model="titleText" />
+        </div>
+        <div class="create-item-button"><button @click="onAddClick">Add</button></div>
       </div>
       <div class="list">
-        <div class="list-header">Total item count: 3, completed: 1</div>
-        <div class="list-row">
-          <div class="item-checkbox"><input type="checkbox" /></div>
-          <div class="item-id">1</div>
-          <div class="item-text">Write code</div>
-          <div class="item-date">15.11.2023<br />09:00</div>
-          <div class="item-delete-button"><button>Delete</button></div>
-        </div>
-        <div class="list-row completed">
-          <div class="item-checkbox"><input type="checkbox" checked /></div>
-          <div class="item-id">2</div>
-          <div class="item-text">Refactor code</div>
-          <div class="item-date">15.11.2023<br />09:00</div>
-          <div class="item-delete-button"><button>Delete</button></div>
-        </div>
-        <div class="list-row">
-          <div class="item-checkbox"><input type="checkbox" /></div>
-          <div class="item-id">5</div>
-          <div class="item-text">Delete code</div>
-          <div class="item-date">15.11.2023<br />09:00</div>
-          <div class="item-delete-button"><button>Delete</button></div>
+        <div class="list-header">Total item count: {{ itemCount }}, completed: {{ completedItemCount }}</div>
+        <div v-for="item in items" :key="item.id" :class="['list-row', item.isCompleted ? 'completed': '' ]">
+          <div class="item-checkbox"><input type="checkbox" v-model="item.isCompleted" /></div>
+          <div class="item-id" title="Id">{{ item.id }}</div>
+          <div class="item-text" title="Text">{{ item.text }}</div>
+          <div class="item-date" title="Created date">{{ item.createDateTime.toLocaleDateString() }}<br />{{
+            item.createDateTime.toLocaleTimeString() }}</div>
+          <div class="item-delete-button"><button @click="onDeleteClick(item)">Delete</button></div>
         </div>
       </div>
     </div>
@@ -36,14 +25,41 @@
 </template>
 
 <script lang="ts" >
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import PageHeader from './components/PageHeader.vue';
+import { ToDoItem } from './services';
 
 @Component({
   components: { PageHeader }
 })
 export default class App extends Vue {
 
+  nextId = 1;
+  titleText = "";
+  items: ToDoItem[] = [];
+
+  get itemCount() {
+    return this.items.length;
+  }
+
+  get completedItemCount() {
+    return this.items.reduce((accumulator, currentValue) => accumulator + (currentValue.isCompleted?1:0), 0);
+  }
+
+  onAddClick() {
+    this.items.push({
+      id: this.nextId,
+      text: this.titleText,
+      createDateTime: new Date(),
+      isCompleted: false
+    });
+    this.nextId++;
+    this.titleText = '';
+  }
+
+  onDeleteClick(item: ToDoItem) {
+    this.items.splice(this.items.indexOf(item), 1);
+  }
 }
 </script>
 
